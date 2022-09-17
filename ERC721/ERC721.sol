@@ -123,6 +123,11 @@ contract ERC721 is IERC721Metadata, IERC721{
         return _operatorApprovals[owner][operator];
     }
 
+    
+    function interfaceId() external pure returns(bytes4){
+        return type(IERC721).interfaceId;
+    }
+
     //私有方法-------------------------------------------------------------------------------
     //判断操作者是否是拥有者或者被授权
     function _isApprovedOrOwner(address owner, address spender, uint tokenId)
@@ -196,5 +201,27 @@ contract ERC721 is IERC721Metadata, IERC721{
         } else {
             return true;
         }
+    }
+
+    //铸造函数
+    function _mint(address to, uint tokenId) internal virtual {
+        require(to != address(0), "mint to zero address");
+        require(_owners[tokenId] == address(0), "tokenId is zero");
+
+        _balances[to] +=1;
+        _owners[tokenId] = to;
+    }
+
+    // 销毁函数，通过调整_balances和_owners变量来销毁tokenId，同时释放Tranfer事件。条件：tokenId存在。
+    function _burn(uint tokenId) internal virtual {
+        address owner = ownerOf(tokenId);
+        require(msg.sender == owner, "not owner of token");
+
+        _approve(owner, address(0), tokenId);
+
+        _balances[owner] -= 1;
+        delete _owners[tokenId];
+
+        emit Transfer(owner, address(0), tokenId);
     }
 }
