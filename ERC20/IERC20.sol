@@ -46,5 +46,5 @@ interface IERC20 {
     /**
      * @dev 调用者账户给'to'转账'amount'数量的代币
      */
-    function transfer (address to, uint256 amount) external view returns (uint256);
+    function transfer (address to, uint256 amount) external view returns (bool);
 }
