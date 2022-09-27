@@ -11,7 +11,6 @@ pragma solidity ^0.8.7;
             /  \
           是    否
           /      \
-          
 receive()存在?   fallback()
         / \
        是  否
@@ -39,5 +38,26 @@ contract part3{
 
     function test2() external view returns (uint){
         return msg.sender.balance;
+    }
+}
+
+//工厂合约
+contract Account{
+    address public bank;
+    address public owner;
+
+    constructor (address _owner) payable{
+        owner = _owner;
+    }
+
+}
+
+contract AccountFactory{
+    Account[] public accounts;
+
+    function createAccount(address _owner) external payable {
+        //new 返回一个合约地址, 声明为Account类型
+        Account account = new Account{value: 10}(_owner);
+        accounts.push(account);
     }
 }
